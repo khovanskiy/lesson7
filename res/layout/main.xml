@@ -13,7 +13,12 @@
                 android:layout_height="match_parent"
                 android:text="Поток:"
                 android:id="@+id/channelTitle" android:textSize="15dp" android:layout_weight="1"
-                android:layout_gravity="center" android:gravity="center"/>
+                android:gravity="center_vertical|left" android:layout_marginLeft="5dp"/>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sync"
+                android:id="@+id/syncButton" android:onClick="onSyncButtonClicked"/>
         <ProgressBar
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -29,6 +29,10 @@ public class ArticlesActivity extends Activity implements IEventHadler
         list_view.setAdapter(adapter);
 
         id_channel = getIntent().getIntExtra("ID_CHANNEL", 0);
+    }
+
+    public void onSyncButtonClicked(View v)
+    {
         Cursor c = Database.gi().query("select * from channels where id_channel = "+id_channel);
         if (c.getCount() != 0)
         {
@@ -36,27 +40,25 @@ public class ArticlesActivity extends Activity implements IEventHadler
             Channel channel = new Channel(c.getString(2));
             channel.id_channel = Integer.parseInt(c.getString(0));
             channel.title = c.getString(1);
-            loadArticles(channel);
+
+            adapter.entries.clear();
+
+            Console.print("Update =  "+channel.url);
+            Database.gi().addEventListener(this);
+            Database.gi().updateChannel(channel);
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ((ProgressBar)findViewById(R.id.progressBar)).setVisibility(ProgressBar.VISIBLE);
+                }
+            });
         }
         else
         {
-
+            Console.print("Not found");
         }
         c.close();
-    }
-
-    public void loadArticles(Channel channel)
-    {
-        adapter.entries.clear();
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ((ProgressBar)findViewById(R.id.progressBar)).setVisibility(ProgressBar.VISIBLE);
-            }
-        });
-        XmlLoader loader = new XmlLoader(channel);
-        loader.addEventListener(this);
-        //loader.start();
     }
 
     @Override
@@ -69,7 +71,6 @@ public class ArticlesActivity extends Activity implements IEventHadler
         Cursor sth = Database.gi().query("select * from entries where id_channel = "+id_channel);
         while (sth.moveToNext())
         {
-            //Console.print(sth.getString(0)+" "+sth.getString(1)+" "+sth.getString(2));
             Entry entry = new Entry();
             entry.title = sth.getString(2);
             entry.link = sth.getString(3);
@@ -86,6 +87,7 @@ public class ArticlesActivity extends Activity implements IEventHadler
     }
     public void onEntries(Vector<Entry> entries)
     {
+        //Console.print();
         for (int i = 0; i < entries.size(); i++)
         {
             adapter.entries.add(entries.get(i));
@@ -103,16 +105,11 @@ public class ArticlesActivity extends Activity implements IEventHadler
     @Override
     public void handleEvent(Event e)
     {
-        Console.print("Revieved "+e.type);
         if (e.type == Event.COMPLETE)
         {
             Vector<Entry> v = (Vector<Entry>) e.data.get("ENTRIES");
-            Channel channel = (Channel) e.data.get("CHANNEL");
             onEntries(v);
-        }
-        else if (e.type == Event.ERROR)
-        {
-            Console.print("Message: ERROR");
+            Database.gi().removeEventListener(this);
         }
     }
 }

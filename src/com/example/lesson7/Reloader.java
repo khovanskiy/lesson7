@@ -43,6 +43,6 @@ public class Reloader extends BroadcastReceiver
         AlarmManager am = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, Reloader.class);
         PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, 0);
-        am.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), 5000, pi);
+        am.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), 60000, pi);
     }
 }

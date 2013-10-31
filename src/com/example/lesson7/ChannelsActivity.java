@@ -33,7 +33,7 @@ public class ChannelsActivity extends Activity implements IEventHadler
 
     @Override
     public void handleEvent(Event e) {
-        Console.print("Message: error");
+        //Console.print("Message: good");
     }
 
     public void gotoAddChannel(View v)

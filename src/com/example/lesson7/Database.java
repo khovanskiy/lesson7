@@ -118,6 +118,7 @@ public class Database extends SQLiteOpenHelper implements IEventDispatcher, IEve
                 //Console.print("ENTRY "+entry.title);
                 exec("insert into entries values(null, "+channel.id_channel+","+ DatabaseUtils.sqlEscapeString(entry.title)+","+DatabaseUtils.sqlEscapeString(entry.link)+","+DatabaseUtils.sqlEscapeString(entry.description)+")");
             }
+            dispatchEvent(new Event(this, Event.COMPLETE));
         }
     }
 }
