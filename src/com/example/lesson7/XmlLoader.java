@@ -1,5 +1,6 @@
 package com.example.lesson7;
 
+import android.util.Log;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -17,7 +18,6 @@ import java.io.Reader;
 public class XmlLoader extends Thread implements IEventDispatcher
 {
     private Channel channel;
-    ArticlesActivity program;
     private HttpClient client = new DefaultHttpClient();
     private EventDispatcher event_pull;
 
@@ -31,6 +31,7 @@ public class XmlLoader extends Thread implements IEventDispatcher
     public void run() {
         super.run();
         try {
+
             HttpGet request = new HttpGet(channel.url);
             HttpResponse response = client.execute(request);
             HttpEntity entiny = response.getEntity();
@@ -47,7 +48,10 @@ public class XmlLoader extends Thread implements IEventDispatcher
         }
         catch (Exception e)
         {
-            Console.print("ERROR: "+e.getMessage());
+            //Console.print("ERROR: "+e.toString()+" "+channel);
+            //e.printStackTrace();
+
+            Log.i("CONSOLE","ERROR",e);
             dispatchEvent(new Event(this, Event.ERROR));
         }
     }
